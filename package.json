@@ -1,0 +1,25 @@
+{
+  "name": "rosterbotproject",
+  "version": "1.0.0",
+  "description": "Roster Slack Bot",
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "dotenv": "^8.2.0",
+    "slackbots": "^1.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RaphaelQSmith/rosterbotproject.git"
+  },
+  "author": "Raphael Smith, YanJue Hau, Narcisus Perejan, Fangbo Li",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RaphaelQSmith/rosterbotproject/issues"
+  },
+  "homepage": "https://github.com/RaphaelQSmith/rosterbotproject#readme"
+}
