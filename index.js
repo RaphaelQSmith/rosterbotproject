@@ -47,5 +47,15 @@ const bot = new SlackBot({
   }
 
 function availability(){
-    
-}
+
+    await axios.get(`${process.env.MONGODB_TOKEN}`).then(res =>{
+        console.log(res.data);    
+        const params = {
+          icon_emoji: ':question:'
+        };
+        bot.postMessageToChannel(
+          'roster',
+          `Use the "/weather" command to check the current situation.`,
+          params
+        );
+      }
