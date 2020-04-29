@@ -37,25 +37,42 @@ const bot = new SlackBot({
 
   // checks and respond to incoming messages
   function messageHandler(message){
-    if(message.includes('/available')){
+    if(message.includes(' /available')){
         availability();
-    }else if(message.includes('/holidays')){
+    }else if(message.includes(' /holidays')){
         checkHolidays();
-    }else if(message.includes('/confirm')){
+    }else if(message.includes(' /confirmed')){
         confirmShift();
+    }else if(message.includes(' /help')){
+      help();
     }
   }
 
 function availability(){
 
-    await axios.get(`${process.env.MONGODB_TOKEN}`).then(res =>{
-        console.log(res.data);    
+    axios.get(`${process.env.MONGODB_TOKEN}`).then(res =>{
+        console.log(res.data);
+    });    
         const params = {
           icon_emoji: ':question:'
         };
         bot.postMessageToChannel(
           'roster',
-          `Use the "/weather" command to check the current situation.`,
+          `Use the " ".`,
           params
         );
       }
+
+function help(){
+  const params = {
+    icon_emoji: ':question:'
+  };
+  bot.postMessageToChannel(
+    'roster',
+    `Use the following commands:
+         "/available" command to let your manager know when you wanna work. 
+         "/holidays" command will show when your holidays are schedule.
+         "/confirmed" will show all your confirmed shifts.`,
+    params
+  );
+}
