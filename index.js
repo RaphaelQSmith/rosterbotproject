@@ -32,33 +32,40 @@ const bot = new SlackBot({
     if(data.type !== 'message'){
         return;
     }
-    messageHandler(data.text);
+    messageHandler(data);
   });
 
   // checks and respond to incoming messages
-  function messageHandler(message){
-    if(message.includes(' /available')){
-        availability();
-    }else if(message.includes(' /holidays')){
-        checkHolidays();
-    }else if(message.includes(' /confirmed')){
-        confirmShift();
-    }else if(message.includes(' /help')){
-      help();
+  function messageHandler(data){
+    if(data.text.includes(' /available')){
+      
+      const staff = data.user;
+      console.log(staff)
+      userName = bot.getUserById(staff)
+      console.log(userName)
+      bot.postMessageToUser(userName, 'hello')
+        // availability();
     }
+    // else if(message.includes(' /holidays')){
+    //     checkHolidays();
+    // }else if(message.includes(' /confirmed')){
+    //     confirmShift();
+    // }else if(message.includes(' /help')){
+    //   help();
+    // }
   }
 
 function availability(){
 
-    axios.get(`${process.env.MONGODB_TOKEN}`).then(res =>{
-        console.log(res.data);
-    });    
+    // axios.get(`${process.env.MONGODB_TOKEN}`).then(res =>{
+    //     console.log(res.data);
+    // });    
         const params = {
           icon_emoji: ':question:'
         };
         bot.postMessageToChannel(
           'roster',
-          `Use the " ".`,
+          ` `,
           params
         );
       }
