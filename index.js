@@ -1,7 +1,15 @@
-const SlackBot = require('slackbots');
-const axios = require('axios');
-const dotenv = require('dotenv')
-dotenv.config()
+const SlackBot = require('slackbots'),
+      path = require('path'),
+      http = require('http'),
+      bodyParser = require("body-parser"),
+      express = require('express'),
+      axios = require('axios');
+      dotenv = require('dotenv')
+      dotenv.config();
+
+var router = express(); 
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: true }));
 
 // bot name and access token
 const bot = new SlackBot({
@@ -41,11 +49,22 @@ const bot = new SlackBot({
       
       const staff = data.user;
       console.log(staff)
-      userName = bot.getUserById(staff)
-      console.log(userName)
-      bot.postMessageToUser(userName, 'hello')
-        // availability();
+
+      axios.get('/shifts/').then(res => {
+        Shift.find((err, docs)=>{
+            if(!err){
+               console.log(res.body)
+            }
+            else {
+                console.log(err);
+            }
+        })
     }
+      })
+
+    //   bot.postMessageToUser(userName, 'hello')
+    //     // availability();
+    // }
     // else if(message.includes(' /holidays')){
     //     checkHolidays();
     // }else if(message.includes(' /confirmed')){
@@ -82,4 +101,23 @@ function help(){
          "/confirmed" will show all your confirmed shifts.`,
     params
   );
+}
+
+
+var port = process.env.PORT || 3000;
+router.listen(port, function(err){
+  console.log("Listening on Port: " + port)
+});
+
+//DB CONNECTION
+mongoose.connect(process.env.MONGODB_TOKEN);
+mongoose.connection.on('error', (err) => { 
+    console.log('Mongodb Error: ', err); 
+    process.exit();
+});
+mongoose.connection.on('connected', () => { 
+    console.log('MongoDB is successfully connected');
+});
+// Avoid deprecated mongoDB query
+mongoose.set('useFindAndModify', false);
 }
