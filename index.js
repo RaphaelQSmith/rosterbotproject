@@ -60,7 +60,7 @@ const bot = new SlackBot({
             }
         })
     }
-      })
+      )
 
     //   bot.postMessageToUser(userName, 'hello')
     //     // availability();
