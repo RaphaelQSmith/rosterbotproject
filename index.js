@@ -39,12 +39,22 @@ const bot = new SlackBot({
 
   // checks and respond to incoming messages
   function messageHandler(data){
-    if(data.text.includes(' /available')){
+    if(data.text.includes(' /myshifts')){
 
       const staffUser = data.user;
       console.log(staffUser);
       
-      bot.postMessageToUser(shifts[0].staff, shifts[0].date +" "+ shifts[0].shiftTime)
+      for(shift of shifts){
+        if (shift.slackUser=== staffUser) {
+          bot.postMessageToUser(shift.staff, shift.date +" "+ shift.shiftTime)
+        } else {
+          for(staff of staffList){
+            if(staff.slackUser === staffUser){
+              bot.postMessageToUser(staff.name, "No shifts found");
+            }
+          }
+        }
+      }
         // availability();
     }else if(data.text.includes(' /holidays')){
         checkHolidays();
@@ -116,18 +126,26 @@ function help(){
 
 var holidays = [
   {
-    "staff": "",
+    "staff": "UU98UF8AG",
     "start": "2020-08-01",
     "finish":"2020-08-30"
-  }
+  },
   {
-    "staff": "",
+    "staff": "U******",
     "start": "2020-10-01",
     "finish":"2020-10-30"
-  }
+  },
   {
-    "staff": "",
+    "staff": "U*********",
     "start": "2020-12-01",
     "finish":"2020-12-30"
+  }
+]
+
+var staffList = [
+  {
+    "slackUser": "UU98UF8AG",
+    "name": "querinosmith",
+    "department": "Sales"
   }
 ]
