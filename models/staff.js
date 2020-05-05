@@ -2,7 +2,8 @@ var mongoose = require("mongoose");
 
 // MongoDB style movie Schema
 var staffSchema = new mongoose.Schema({
-      user: String,
+      slackUser: String,
+      name: String,
       department: String
    });
 // export model 
