@@ -10,25 +10,21 @@ const bot = new SlackBot({
     token: `${process.env.BOT_TOKEN}`,
     name: 'myroster'
   });
-
+  const params = {
+    icon_emoji: ':robot_face:'
+  };
   // initialize the app
-  bot.on('start', function(){
-    var params = {
-      icon_emoji: ':smiley:'
-    };
-  
+  bot.on('start', function(){  
     bot.postMessageToChannel(
       'roster',
       "I'm available. Ask me about your shift...",
       params
     );
   });
-
   // error handler
   bot.on('error', (err)=>
     console.log(err)
     );
-
   // message handler  
   bot.on('message', (data)=>{
     if(data.type !== 'message'){
@@ -36,7 +32,6 @@ const bot = new SlackBot({
     }
     messageHandler(data);
   });
-
   // checks and respond to incoming messages
   function messageHandler(data){
     if(data.text.includes(' /myshifts')){
@@ -47,6 +42,7 @@ const bot = new SlackBot({
       help();
     }
 }
+
   function getStaffName(data){
       for(staff of staffList){
         if(staff.slackUser === data.user){
@@ -54,6 +50,7 @@ const bot = new SlackBot({
         }
     }
   }
+
   function myConfirmedShifts(data){
     const staffUser = data.user;
       console.log(staffUser);
@@ -61,23 +58,30 @@ const bot = new SlackBot({
       for(shift of shifts){
         if (shift.slackUser===staffUser & shift.confirmed===true) {
           total += 1;
-          bot.postMessageToUser(shift.staff,
-             `Confirmed shift ${total}: 
-              ${shift.date} ${shift.shiftTime}`);          
+          bot.postMessageToUser(
+            shift.staff,
+            `Confirmed shift ${total}: 
+             ${shift.date} ${shift.shiftTime}`,
+            params
+            );          
         }
       }
       if(total===0){
-        bot.postMessageToUser(getStaffName(data), "No shifts found");
+        bot.postMessageToUser(
+          getStaffName(data), 
+          "No shifts found", 
+          params);
         }  
-        }
-
+      }
 
   function checkHolidays(data){
     for(hol of holidays){
       if(data.user === hol.slackUser){
-        bot.postMessageToUser(getStaffName(data), 
+        bot.postMessageToUser(
+          getStaffName(data), 
           `Your Holidays starts at: 
-           ${hol.start} and ends: ${hol.finish}`)
+           ${hol.start} and ends: ${hol.finish}`),
+           params
       }
     }
   }
