@@ -40,14 +40,33 @@ const bot = new SlackBot({
         checkHolidays(data);
     }else if(data.text.includes(' /help')){
       help();
+    }else if(data.text.includes(' /available')){
+      pickAShift(data);
     }
 }
-
-  function getStaffName(data){
-      for(staff of staffList){
-        if(staff.slackUser === data.user){
-          return staff.name;
-        }
+// get user name from the staff list
+function getStaffName(data){
+  for(staff of staffList){
+    if(staff.slackUser === data.user){
+      return staff.name;
+    }
+  }
+}
+// increment ID
+function newID(){
+  
+}
+// display available shifts
+function pickAShift(data){
+    for(shift of shifts){
+      if(shift.slackUser===""){
+        bot.postMessageToUser(
+            getStaffName(data),
+            `Available shift ID - ${shift.id}: 
+             ${shift.date} ${shift.shiftTime}`,
+            params
+            );
+      }
     }
   }
 
@@ -100,31 +119,107 @@ function help(){
   );
 }
   var shifts = [
-  {
-    "date": "2020-05-01",
-    "shiftTime": "8am-4pm",
-    "slackUser": "UU98UF8AG",
-    "staff": "querinosmith",
-    "manager": "John Smith",
-    "confirmed": true
- },
+    {
+      "id": 1,
+      "hours": 8,
+      "date": "2020-05-01",
+      "shiftTime": "8am-4pm",
+      "slackUser": "UU98UF8AG",
+      "staff": "querinosmith",
+      "manager": "John Smith",
+      "confirmed": true
+  },
 
- {
-    "date": "2020-06-20",
-    "shiftTime": "4pm-10pm",
-    "slackUser": "UU98UF8AG",
-    "staff": "querinosmith",
-    "manager": "John Smith",
-    "confirmed": true
- },
- {
-    "date": "2020-05-10",
-    "shiftTime": "2pm-8pm",
-    "slackUser": "UU98UF8AG",
-    "staff": "querinosmith",
+  {
+      "id": 2,
+      "hours": 8,
+      "date": "2020-06-20",
+      "shiftTime": "4pm-10pm",
+      "slackUser": "UU98UF8AG",
+      "staff": "querinosmith",
+      "manager": "John Smith",
+      "confirmed": true
+  },
+  {
+      "id": 3,
+      "hours": 8,
+      "date": "2020-05-13",
+      "shiftTime": "2pm-8pm",
+      "slackUser": "UU98UF8AG",
+      "staff": "querinosmith",
+      "manager": "John Smith",
+      "confirmed": false
+  },
+  {
+      "id": 4,
+      "hours": 8,
+      "date": "2020-05-13",
+      "shiftTime": "2pm-10pm",
+      "slackUser": "",
+      "staff": "",
+      "manager": "John Smith",
+      "confirmed": false
+  },
+  {
+      "id": 5,
+      "hours": 8,
+      "date": "2020-05-13",
+      "shiftTime": "8am-3pm",
+      "slackUser": "",
+      "staff": "",
+      "manager": "John Smith",
+      "confirmed": false
+  },
+  {
+      "id": 6,
+      "hours": 8,
+      "date": "2020-05-12",
+      "shiftTime": "10am-6pm",
+      "slackUser": "",
+      "staff": "",
+      "manager": "John Smith",
+      "confirmed": false
+  },
+  {
+      "id": 7,
+      "hours": 8,
+      "date": "2020-05-10",
+      "shiftTime": "1pm-9pm",
+      "slackUser": "",
+      "staff": "",
+      "manager": "John Smith",
+      "confirmed": false
+  },
+  {
+      "id": 8,
+      "hours": 8,
+      "date": "2020-05-11",
+      "shiftTime": "4pm-10pm",
+      "slackUser": "",
+      "staff": "",
+      "manager": "John Smith",
+      "confirmed": false
+  },
+  {
+      "id": 9,
+      "hours": 8,
+      "date": "2020-05-09",
+      "shiftTime": "8am-16pm",
+      "slackUser": "",
+      "staff": "",
+      "manager": "John Smith",
+      "confirmed": false
+  },
+  {
+    "id": 10,
+    "hours": 8,
+    "date": "2020-05-20",
+    "shiftTime": "4m-10pm",
+    "slackUser": "",
+    "staff": "",
     "manager": "John Smith",
     "confirmed": false
- }
+  }
 ]
 
 var holidays = [
