@@ -7,3 +7,14 @@ Created by:
 Project Supervisor:
     Mikhail Timofeev
 
+Tools and applications currently being used on the project:
+
+* Initial Stage
+- Slack Documentation and Dev Tools: https://api.slack.com/start
+- Slackbot API: https://github.com/mishk0/slack-bot-api
+- Node.js: https://nodejs.org/en/
+
+* Final Stage (Database Connection)
+- MongoDB Atlas: https://account.mongodb.com/
+- Mongoose: https://www.npmjs.com/package/mongoose  
+
