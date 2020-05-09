@@ -40,6 +40,8 @@ const bot = new SlackBot({
         checkHolidays(data);
     }else if(data.text.includes(' /help')){
       help();
+    }else if(data.text.includes(' /hours')){
+      checkTotalHours(data);
     }else if(data.text.includes(' /available')){
       pickAShift(data);
     }
@@ -104,6 +106,36 @@ function pickAShift(data){
       }
     }
   }
+
+/**
+ * 
+ * @yanjuehau 
+ */  
+//Check total hours function , still developing.......
+function checkTotalHours(data){
+    const shift = shifts;
+    var total = 0;
+    var hours;
+
+    for(shift.workHours of shifts)      
+        if(data.user === shift.slackUser){
+            
+            shift.slackUser = shift.slackUser + shift.workHours;
+
+                }else{
+                    shift.slackUser = shift.workHours;
+
+               }
+                for(total=0; total<shift.workHours.length; total++){
+                 hours = total.toString();
+                }
+                bot.postMessageToUser(getStaffName(data),
+               `Your total working hours are :  ${hours} `)
+
+                 console.log(hours);
+
+}
+
 
 function help(){
   const params = {
