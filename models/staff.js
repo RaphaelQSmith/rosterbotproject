@@ -1,4 +1,4 @@
-var mongoose = require("mongoose");
+const mongoose = require('../database/db')
 
 // MongoDB style movie Schema
 var staffSchema = new mongoose.Schema({

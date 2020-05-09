@@ -1,5 +1,4 @@
-var mongoose = require("mongoose");
-
+const mongoose = require('../database/db')
 // MongoDB style movie Schema
 var shiftSchema = new mongoose.Schema({
       date: String,
