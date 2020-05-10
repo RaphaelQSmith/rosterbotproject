@@ -114,29 +114,34 @@ function pickAShift(data){
 //Check total hours function , still developing.......
 function checkTotalHours(data){
     const shift = shifts;
-    var total = 0;
-    var hours;
+  
+    shift.forEach(function(d){
 
-    for(shift.workHours of shifts)      
-        if(data.user === shift.slackUser){
-            
-            shift.slackUser = shift.slackUser + shift.workHours;
+            if(holder.hasOwnProperty(d.slackUser)){
+                 holder[d.slackUser] = holder[d.slackUser] + d.hours;
 
-                }else{
-                    shift.slackUser = shift.workHours;
+             } else {
+                 holder[d.slackUser] = d.hours;
 
-               }
-                for(total=0; total<shift.workHours.length; total++){
-                 hours = total.toString();
-                }
-                bot.postMessageToUser(getStaffName(data),
-               `Your total working hours are :  ${hours} `)
+            }
+                   
+        });
 
-                 console.log(hours);
+            var obj2 = [] ;
+                
 
-}
+            for (var prop in holder) {
+                obj2.push({ slackUser: prop, hours: holder[prop]});
+                 result = obj2.toString();
+                    
+            }
 
+             bot.postMessageToUser(getStaffName(data),
+            `Your total working hours are :  ${obj2} `)
+  
+            console.log(obj2);
 
+    }
 function help(){
   const params = {
     icon_emoji: ':question:'
