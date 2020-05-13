@@ -114,6 +114,7 @@ function pickAShift(data){
 //Check total hours function , still developing.......
 function checkTotalHours(data){
     const shift = shifts;
+    var holder = {};
   
     shift.forEach(function(d){
 
@@ -137,7 +138,7 @@ function checkTotalHours(data){
             }
 
              bot.postMessageToUser(getStaffName(data),
-            `Your total working hours are :  ${obj2} `)
+            `Your total working hours are :  ${obj2} `) //If i use the result variable , it print [object object ] as the result 
   
             console.log(obj2);
 
