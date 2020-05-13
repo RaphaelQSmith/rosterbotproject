@@ -19,7 +19,7 @@ Tools and applications currently being used on the project:
 - Mongoose: https://www.npmjs.com/package/mongoose  
 
 # How we start to build 
-After we had gathered some useful resources for creating the slack bot , we started to build it with using a testing bot to test it how it works, then we started to implement it into our main Slack's Roster Bot.
+After we had gathered some useful resources for creating the slack bot , we started to build it with creating a testing bot for our own testing purposes just to see how it works, then we started to implement it into our main Slack's Roster Bot here.
 
 # Phases for building the bot
 
