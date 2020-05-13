@@ -4,7 +4,6 @@ const SlackBot = require('slackbots'),
       axios = require('axios');
       dotenv = require('dotenv')
       dotenv.config();
-var ShiftSchema = require('./models/shifts');
 
 // bot name and access token
 const bot = new SlackBot({
@@ -45,26 +44,8 @@ const bot = new SlackBot({
       checkTotalHours(data);
     }else if(data.text.includes(' /available')){
       pickAShift(data);
-    }else if(data.text.includes(' /select')){
-      selectShift(data);
     }
 }
-
-function selectShift(data){
-   ShiftSchema.create(
- 
-  {
-    "id": 2,
-    "hours": 8,
-    "date": "2020-06-20",
-    "shiftTime": "4pm-10pm",
-    "slackUser": "UU98UF8AG",
-    "staff": "querinosmith",
-    "manager": "John Smith",
-    "confirmed": true
-  })
-}
-
 // get user name from the staff list
 function getStaffName(data){
   for(staff of staffList){
@@ -133,6 +114,7 @@ function pickAShift(data){
 //Check total hours function , still developing.......
 function checkTotalHours(data){
     const shift = shifts;
+    var holder = {};
   
     shift.forEach(function(d){
 
@@ -147,7 +129,7 @@ function checkTotalHours(data){
         });
 
             var obj2 = [] ;
-            var result = "";  
+                
 
             for (var prop in holder) {
                 obj2.push({ slackUser: prop, hours: holder[prop]});
@@ -156,12 +138,11 @@ function checkTotalHours(data){
             }
 
              bot.postMessageToUser(getStaffName(data),
-            `Your total working hours are :  ${result} `)
+            `Your total working hours are :  ${obj2} `) //If i use the result variable , it print [object object ] as the result 
   
-            console.log(result);
+            console.log(obj2);
 
     }
-
 function help(){
   const params = {
     icon_emoji: ':question:'
