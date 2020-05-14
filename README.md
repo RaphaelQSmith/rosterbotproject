@@ -35,8 +35,8 @@ After we had gathered some useful resources for creating the slack bot , we star
 4. The third function we have created for the bot is to retrieve the data of the staff's total working hours and printing it back on        slack for the user.
 4. The fourth function we have created for the bot is to 
 
-* Phase three ()
+* Phase three (Implementing database using Mongodb Atlas)
 1. After we have most of our method functions ready ,we starting to implement the mongodb atlas into our Rosterbot.
-3. We register an account 
+3. We have registered an account in the Mongodb Atlas then created a cluster and user in the account , then we connected it with our        Rosterbot using the mongodb url that generated to us ,it containing some user credentials of the mongodb user.
 2. We have created a serverless database in this Rosterbot , it allow us to retrieve and send data in more flexible ways.
-3. A huge advantage to us for being using the mongodb atlas as our database , is that we don't have worry about to create a database        that require those specific unique keys to associate with by our self.
+3. A huge advantage to us for being using the mongodb atlas as our database , is that we don't have worry about to create a database by    our self that required specific unique keys or foreign keys to associate with all entities and tables .
