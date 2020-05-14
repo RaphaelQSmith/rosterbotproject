@@ -3,7 +3,10 @@ const SlackBot = require('slackbots'),
       express = require('express'),
       axios = require('axios');
       dotenv = require('dotenv')
-      dotenv.config();
+      dotenv.config()
+var ShiftSchema = require('./models/shifts')
+    StaffSchema = require('./models/staff')
+    HolidaySchema = require('./models/holidays')
 
 // bot name and access token
 const bot = new SlackBot({
@@ -44,6 +47,8 @@ const bot = new SlackBot({
       checkTotalHours(data);
     }else if(data.text.includes(' /available')){
       pickAShift(data);
+    }else if(data.text.includes(' /select')){
+      selectShift(data);
     }
 }
 // get user name from the staff list
@@ -54,10 +59,7 @@ function getStaffName(data){
     }
   }
 }
-// increment ID
-function newID(){
-  
-}
+
 // display available shifts
 function pickAShift(data){
     for(shift of shifts){
@@ -95,54 +97,43 @@ function pickAShift(data){
         }  
       }
 
-  function checkHolidays(data){
-    for(hol of holidays){
-      if(data.user === hol.slackUser){
-        bot.postMessageToUser(
-          getStaffName(data), 
-          `Your Holidays starts at: 
-           ${hol.start} and ends: ${hol.finish}`),
-           params
-      }
-    }
+  function checkHolidays(data){  
+    var user = data.user 
+    hol =  HolidaySchema.find(
+        {"slackUser": `${user}`},
+          function (err, holiday){
+              for(a of holiday){
+              var finish = JSON.stringify(a.finish)  
+              var start = JSON.stringify(a.start)
+              bot.postMessageToUser(
+                "querinosmith",
+                `Your Holidays starts at: 
+                ${start} and ends: ${finish}`),
+                params  
+          }
+        }
+     )   
   }
-
+  
 /**
  * 
  * @yanjuehau 
  */  
 //Check total hours function , still developing.......
 function checkTotalHours(data){
-    const shift = shifts;
-    var holder = {};
+
+  var totalHours = 0;
+    for(shift of shifts){
+      if (shift.slackUser===data.user){
+        totalHours = totalHours + shift.hours;
+      }
+    }; 
   
-    shift.forEach(function(d){
-
-            if(holder.hasOwnProperty(d.slackUser)){
-                 holder[d.slackUser] = holder[d.slackUser] + d.hours;
-
-             } else {
-                 holder[d.slackUser] = d.hours;
-
-            }
-                   
-        });
-
-            var obj2 = [] ;
-                
-
-            for (var prop in holder) {
-                obj2.push({ slackUser: prop, hours: holder[prop]});
-                 result = obj2.toString();
-                    
-            }
-
-             bot.postMessageToUser(getStaffName(data),
-            `Your total working hours are :  ${obj2} `) //If i use the result variable , it print [object object ] as the result 
+    bot.postMessageToUser(getStaffName(data),
+       `Your total working hours are : ${totalHours} `) 
   
-            console.log(obj2);
+  }
 
-    }
 function help(){
   const params = {
     icon_emoji: ':question:'
@@ -156,132 +147,18 @@ function help(){
     params
   );
 }
-  var shifts = [
-    {
-      "id": 1,
-      "hours": 8,
-      "date": "2020-05-01",
-      "shiftTime": "8am-4pm",
-      "slackUser": "UU98UF8AG",
-      "staff": "querinosmith",
-      "manager": "John Smith",
-      "confirmed": true
-  },
 
-  {
-      "id": 2,
-      "hours": 8,
-      "date": "2020-06-20",
-      "shiftTime": "4pm-10pm",
-      "slackUser": "UU98UF8AG",
-      "staff": "querinosmith",
-      "manager": "John Smith",
-      "confirmed": true
-  },
-  {
-      "id": 3,
-      "hours": 8,
-      "date": "2020-05-13",
-      "shiftTime": "2pm-8pm",
-      "slackUser": "UU98UF8AG",
-      "staff": "querinosmith",
-      "manager": "John Smith",
-      "confirmed": false
-  },
-  {
-      "id": 4,
-      "hours": 8,
-      "date": "2020-05-13",
-      "shiftTime": "2pm-10pm",
-      "slackUser": "",
-      "staff": "",
-      "manager": "John Smith",
-      "confirmed": false
-  },
-  {
-      "id": 5,
-      "hours": 8,
-      "date": "2020-05-13",
-      "shiftTime": "8am-3pm",
-      "slackUser": "",
-      "staff": "",
-      "manager": "John Smith",
-      "confirmed": false
-  },
-  {
-      "id": 6,
-      "hours": 8,
-      "date": "2020-05-12",
-      "shiftTime": "10am-6pm",
-      "slackUser": "",
-      "staff": "",
-      "manager": "John Smith",
-      "confirmed": false
-  },
-  {
-      "id": 7,
-      "hours": 8,
-      "date": "2020-05-10",
-      "shiftTime": "1pm-9pm",
-      "slackUser": "",
-      "staff": "",
-      "manager": "John Smith",
-      "confirmed": false
-  },
-  {
-      "id": 8,
-      "hours": 8,
-      "date": "2020-05-11",
-      "shiftTime": "4pm-10pm",
-      "slackUser": "",
-      "staff": "",
-      "manager": "John Smith",
-      "confirmed": false
-  },
-  {
-      "id": 9,
-      "hours": 8,
-      "date": "2020-05-09",
-      "shiftTime": "8am-16pm",
-      "slackUser": "",
-      "staff": "",
-      "manager": "John Smith",
-      "confirmed": false
-  },
-  {
-    "id": 10,
-    "hours": 8,
-    "date": "2020-05-20",
-    "shiftTime": "4m-10pm",
-    "slackUser": "",
-    "staff": "",
-    "manager": "John Smith",
-    "confirmed": false
-  }
-]
+// var holidays = [
+  
+//   {
+//     "slackUser": "U******",
+//     "start": "2020-10-01",
+//     "finish":"2020-10-30"
+//   },
+//   {
+//     "slackUser": "U*********",
+//     "start": "2020-12-01",
+//     "finish":"2020-12-30"
+//   }
+// ]
 
-var holidays = [
-  {
-    "slackUser": "UU98UF8AG",
-    "start": "2020-08-01",
-    "finish":"2020-08-30"
-  },
-  {
-    "slackUser": "U******",
-    "start": "2020-10-01",
-    "finish":"2020-10-30"
-  },
-  {
-    "slackUser": "U*********",
-    "start": "2020-12-01",
-    "finish":"2020-12-30"
-  }
-]
-
-var staffList = [
-  {
-    "slackUser": "UU98UF8AG",
-    "name": "querinosmith",
-    "department": "Sales"
-  }
-]
