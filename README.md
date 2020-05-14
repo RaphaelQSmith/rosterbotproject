@@ -22,7 +22,6 @@ Tools and applications currently being used on the project:
 After we had gathered some useful resources for creating the slack bot , we started to build it with creating a testing bot for our own testing purposes just to see how it works, then we started to implement it into our main Slack's Roster Bot here.
 
 # Phases for building the bot
-
 * Phase one (Creating a basic app bot first)
 1. We have created a Slack's app (RosterBot) inside the Slack platform then added it into a workspace ,then created a bot integration      to integrate with our app.
 2. In order to activate the bot, we have installed all the packages that we need especially slackbot package, then we have been using      the private unique token from the bot integration and store it inside our code therefore we'll be be able to invoke the bot once we      run our code.
