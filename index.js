@@ -1,12 +1,10 @@
-const SlackBot = require('slackbots'),
-      bodyParser = require("body-parser"),
-      express = require('express'),
-      axios = require('axios');
+const SlackBot = require('slackbots')
       dotenv = require('dotenv')
       dotenv.config()
 var ShiftSchema = require('./models/shifts')
     StaffSchema = require('./models/staff')
     HolidaySchema = require('./models/holidays')
+var userList = [];
 
 // bot name and access token
 const bot = new SlackBot({
@@ -18,6 +16,7 @@ const bot = new SlackBot({
   };
   // initialize the app
   bot.on('start', function(){  
+    getStaffName();
     bot.postMessageToChannel(
       'roster',
       "I'm available. Ask me about your shift...",
@@ -52,28 +51,43 @@ const bot = new SlackBot({
     }
 }
 // get user name from the staff list
-function getStaffName(data){
-  for(staff of staffList){
-    if(staff.slackUser === data.user){
-      return staff.name;
-    }
-  }
+function getStaffName() {
+    StaffSchema.find(
+        // {"slackUser": `${user}`},
+        function(err, staff){
+          for(a of staff){
+            userList.push(a)
+          }
+        }
+    )   
 }
 
 // display available shifts
-function pickAShift(data){
-    for(shift of shifts){
-      if(shift.slackUser===""){
-        bot.postMessageToUser(
-            getStaffName(data),
-            `Available shift ID - ${shift.id}: 
-             ${shift.date} ${shift.shiftTime}`,
-            params
-            );
+  function pickAShift(data){
+    var user = data.user 
+    for(a of userList){
+      if(a.slackUser === user){
+        name = a.name;
       }
     }
-  }
 
+    ShiftSchema.find(
+      function(err, shifts){
+        for(a of shifts){
+          var id = JSON.stringify(a.id)
+          var date = JSON.stringify(a.date)  
+          var time = JSON.stringify(a.shiftTime)
+          bot.postMessageToUser(
+            name,
+            `Available shift ID - ${id}: 
+             ${date} ${time}`,
+            params
+            );
+        }
+      }
+    )
+   }
+   
   function myConfirmedShifts(data){
     const staffUser = data.user;
       console.log(staffUser);
@@ -97,19 +111,25 @@ function pickAShift(data){
         }  
       }
 
-  function checkHolidays(data){  
+ function checkHolidays(data){  
     var user = data.user 
-    hol =  HolidaySchema.find(
+    for(a of userList){
+      if(a.slackUser === user){
+        name = a.name;
+      }
+    }
+
+    HolidaySchema.find(
         {"slackUser": `${user}`},
           function (err, holiday){
               for(a of holiday){
-              var finish = JSON.stringify(a.finish)  
-              var start = JSON.stringify(a.start)
-              bot.postMessageToUser(
-                "querinosmith",
-                `Your Holidays starts at: 
-                ${start} and ends: ${finish}`),
-                params  
+                var finish = JSON.stringify(a.finish)  
+                var start = JSON.stringify(a.start)
+                bot.postMessageToUser(
+                  name,
+                  `Your Holidays starts at: 
+                  ${start} and ends: ${finish}`),
+                  params  
           }
         }
      )   
@@ -121,19 +141,25 @@ function pickAShift(data){
  */  
 //Check total hours function , still developing.......
 function checkTotalHours(data){
-
+  var user = data.user
   var totalHours = 0;
-    for(shift of shifts){
-      if (shift.slackUser===data.user){
-        totalHours = totalHours + shift.hours;
-      }
-    }; 
-  
-    bot.postMessageToUser(getStaffName(data),
-       `Your total working hours are : ${totalHours} `) 
-  
-  }
 
+  ShiftSchema.find(
+    {"slackUser": `${user}`},
+    function(err, shifts){
+      for(a of shifts){
+        if (a.slackUser===data.user){
+          totalHours = totalHours + a.hours;
+        }
+        var hours = JSON.stringify(totalHours)  
+    }
+    bot.postMessageToUser(
+      name,
+      `Your total working hours are : ${hours} `,
+      params )
+  }
+  )
+}
 function help(){
   const params = {
     icon_emoji: ':question:'
@@ -147,18 +173,4 @@ function help(){
     params
   );
 }
-
-// var holidays = [
-  
-//   {
-//     "slackUser": "U******",
-//     "start": "2020-10-01",
-//     "finish":"2020-10-30"
-//   },
-//   {
-//     "slackUser": "U*********",
-//     "start": "2020-12-01",
-//     "finish":"2020-12-30"
-//   }
-// ]
 
