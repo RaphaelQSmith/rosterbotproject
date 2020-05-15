@@ -5,6 +5,7 @@ var ShiftSchema = require('./models/shifts')
     StaffSchema = require('./models/staff')
     HolidaySchema = require('./models/holidays')
 var userList = [];
+var name = '';
 
 // bot name and access token
 const bot = new SlackBot({
@@ -113,6 +114,7 @@ function getStaffName() {
 
  function checkHolidays(data){  
     var user = data.user 
+
     for(a of userList){
       if(a.slackUser === user){
         name = a.name;
