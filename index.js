@@ -1,6 +1,9 @@
+// The modules that is required to be install for our bot
 const SlackBot = require('slackbots')
-      dotenv = require('dotenv')
-      dotenv.config()
+      dotenv = require('dotenv') // This module need to be install for the .env file , since that our bot unique token is storing inside .env file
+      dotenv.config() //Allow to be access the .env file
+
+// Some require directory path to our shift, staff and holiday database schema      
 var ShiftSchema = require('./models/shifts')
     StaffSchema = require('./models/staff')
     HolidaySchema = require('./models/holidays')
@@ -15,6 +18,7 @@ const bot = new SlackBot({
   const params = {
     icon_emoji: ':robot_face:'
   };
+  
   // initialize the app
   bot.on('start', function(){  
     getStaffName();
@@ -24,10 +28,12 @@ const bot = new SlackBot({
       params
     );
   });
+  
   // error handler
   bot.on('error', (err)=>
     console.log(err)
     );
+  
   // message handler  
   bot.on('message', (data)=>{
     if(data.type !== 'message'){
@@ -35,7 +41,8 @@ const bot = new SlackBot({
     }
     messageHandler(data);
   });
-  // checks and respond to incoming messages
+  
+  // checks and respond to incoming messages ,then calling specific function
   function messageHandler(data){
     if(data.text.includes(' /myshifts')){
       myConfirmedShifts(data);
@@ -51,6 +58,7 @@ const bot = new SlackBot({
       selectShift(data);
     }
 }
+
 // get user name from the staff list
 function getStaffName() {
     StaffSchema.find(
@@ -63,7 +71,7 @@ function getStaffName() {
     )   
 }
 
-// display available shifts
+// Function to display available shifts
   function pickAShift(data){
     var user = data.user 
     for(a of userList){
@@ -71,7 +79,7 @@ function getStaffName() {
         name = a.name;
       }
     }
-
+    // Find available shifts from the database schema then post result back to user
     ShiftSchema.find(
       function(err, shifts){
         for(a of shifts){
@@ -89,12 +97,13 @@ function getStaffName() {
     )
    }
    
+  // Function to display comfirmed shift
   function myConfirmedShifts(data){
     const staffUser = data.user;
       console.log(staffUser);
       var total = 0;
       for(shift of shifts){
-        if (shift.slackUser===staffUser & shift.confirmed===true) {
+        if (shift.slackUser===staffUser & shift.confirmed===true) { //Check if the slack user from the schema is match to the user and the shift has been comfirmed or not
           total += 1;
           bot.postMessageToUser(
             shift.staff,
@@ -104,7 +113,7 @@ function getStaffName() {
             );          
         }
       }
-      if(total===0){
+      if(total===0){ //If there is no shift then get the staff name and display no shifts
         bot.postMessageToUser(
           getStaffName(data), 
           "No shifts found", 
@@ -112,6 +121,7 @@ function getStaffName() {
         }  
       }
 
+ // Function to check staff's holidays
  function checkHolidays(data){  
     var user = data.user 
 
@@ -121,13 +131,14 @@ function getStaffName() {
       }
     }
 
+ // Find the staff's holiday start date to end date in the database holiday schema   
     HolidaySchema.find(
         {"slackUser": `${user}`},
           function (err, holiday){
               for(a of holiday){
                 var finish = JSON.stringify(a.finish)  
                 var start = JSON.stringify(a.start)
-                bot.postMessageToUser(
+                bot.postMessageToUser( //Display the holidays date period to user on slack
                   name,
                   `Your Holidays starts at: 
                   ${start} and ends: ${finish}`),
@@ -137,20 +148,18 @@ function getStaffName() {
      )   
   }
   
-/**
- * 
- * @yanjuehau 
- */  
-//Check total hours function , still developing.......
+
+//Check total working hours function
 function checkTotalHours(data){
   var user = data.user
   var totalHours = 0;
 
+// Find working hours in database of shift schema    
   ShiftSchema.find(
     {"slackUser": `${user}`},
     function(err, shifts){
       for(a of shifts){
-        if (a.slackUser===data.user){
+        if (a.slackUser===data.user){ // check if the user is match to the slack user in the schema  , if it is then adding the working hours.
           totalHours = totalHours + a.hours;
         }
         var hours = JSON.stringify(totalHours)  
@@ -162,6 +171,8 @@ function checkTotalHours(data){
   }
   )
 }
+
+// Function of display help menu
 function help(){
   const params = {
     icon_emoji: ':question:'
