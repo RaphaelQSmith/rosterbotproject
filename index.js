@@ -54,8 +54,6 @@ const bot = new SlackBot({
       checkTotalHours(data);
     }else if(data.text.includes(' /available')){
       pickAShift(data);
-    }else if(data.text.includes(' /select')){
-      selectShift(data);
     }
 }
 
@@ -99,27 +97,31 @@ function getStaffName() {
    
   // Function to display comfirmed shift
   function myConfirmedShifts(data){
-    const staffUser = data.user;
-      console.log(staffUser);
-      var total = 0;
-      for(shift of shifts){
-        if (shift.slackUser===staffUser & shift.confirmed===true) { //Check if the slack user from the schema is match to the user and the shift has been comfirmed or not
-          total += 1;
-          bot.postMessageToUser(
-            shift.staff,
-            `Confirmed shift ${total}: 
-             ${shift.date} ${shift.shiftTime}`,
-            params
-            );          
+    
+    var user = data.user 
+    for(a of userList){
+      if(a.slackUser === user){
+        name = a.name;
+      }
+    }
+    ShiftSchema.find(
+      function(err, shifts){
+        for(a of shifts){
+          var id = JSON.stringify(a.id)
+          var date = JSON.stringify(a.date)  
+          var time = JSON.stringify(a.shiftTime)
+          
+          if(a.slackUser===user){
+            bot.postMessageToUser(
+              name,
+              `Shift assigned: ID - ${id}: 
+              ${date} ${time}`,
+              params
+              );
         }
-      }
-      if(total===0){ //If there is no shift then get the staff name and display no shifts
-        bot.postMessageToUser(
-          getStaffName(data), 
-          "No shifts found", 
-          params);
-        }  
-      }
+      }  
+    })
+  }
 
  // Function to check staff's holidays
  function checkHolidays(data){  
@@ -180,9 +182,10 @@ function help(){
   bot.postMessageToChannel(
     'roster',
     `Use the following commands:
-         "/available" command to let your manager know when you wanna work. 
-         "/holidays" command will show when your holidays are schedule.
-         "/myshifts" will show all your confirmed shifts.`,
+         "/available" command will display all shifts available at the moment. 
+         "/holidays" will show when your holidays are schedule.
+         "/myshifts" will show all your confirmed shifts.
+         "/hours" displays the total amount of hours scheduled for you`,
     params
   );
 }
